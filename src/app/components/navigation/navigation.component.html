@@ -1,0 +1,27 @@
+<mat-sidenav-container>
+  <mat-sidenav
+    [opened]="true"
+    mode="side"
+    id="inventory-side-nav"
+    class="inventory-side-nav"
+  >
+    <div class="system-logo for-sp">
+      <a>
+        <mat-icon>store</mat-icon>
+      </a>
+    </div>
+    <mat-nav-list>
+      <a mat-list-item title="Quote">
+        <span class="entry">
+          <span>Quote</span>
+        </span>
+      </a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content
+    class="inventory-side-nav-content"
+    [class.nav-expand]="expand === true"
+  >
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>
