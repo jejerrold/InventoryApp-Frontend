@@ -1,1 +1,76 @@
-<p>dashboard works!</p>
+<div class="dashboard">
+  <div class="cards">
+    <mat-card>
+      <mat-card-title>Total Products</mat-card-title>
+      <mat-card-content>1,245</mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-title>Low Stock Items</mat-card-title>
+      <mat-card-content>32</mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-title>Suppliers</mat-card-title>
+      <mat-card-content>14</mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-title>Incoming Shipments</mat-card-title>
+      <mat-card-content>5</mat-card-content>
+    </mat-card>
+  </div>
+
+  <div class="charts">
+    <mat-card>
+      <mat-card-title>Stock Levels</mat-card-title>
+      <div class="chart-container">
+        <canvas
+          *ngIf="isBrowser"
+          baseChart
+          [datasets]="barChartData"
+          [labels]="barChartLabels"
+          [options]="barChartOptions"
+          [legend]="barChartLegend"
+          [type]="barChartType"
+        >
+        </canvas>
+        <div *ngIf="!isBrowser" class="chart-placeholder">Chart loading...</div>
+      </div>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-title>Sales vs Purchases</mat-card-title>
+      <div class="chart-container">
+        <canvas
+          *ngIf="isBrowser"
+          baseChart
+          [datasets]="lineChartData"
+          [labels]="lineChartLabels"
+          [options]="lineChartOptions"
+          [legend]="lineChartLegend"
+          [type]="lineChartType"
+        >
+        </canvas>
+        <div *ngIf="!isBrowser" class="chart-placeholder">Chart loading...</div>
+      </div>
+    </mat-card>
+  </div>
+
+  <div class="table-section">
+    <mat-card>
+      <mat-card-title>Low Stock Alerts</mat-card-title>
+      <table mat-table [dataSource]="lowStockItems" class="mat-elevation-z8">
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef>Product</th>
+          <td mat-cell *matCellDef="let item">{{ item.name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="stock">
+          <th mat-header-cell *matHeaderCellDef>Stock</th>
+          <td mat-cell *matCellDef="let item">{{ item.stock }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['name', 'stock']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['name', 'stock']"></tr>
+      </table>
+    </mat-card>
+  </div>
+</div>
