@@ -1,7 +1,6 @@
-
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
-@use '@angular/material' as mat;
+@use "@angular/material" as mat;
 // Plus imports for other components in your app.
 
 // Include the common styles for Angular Material. We include this here so that you only
@@ -20,15 +19,17 @@ $inventory-app-warn: mat.define-palette(mat.$red-palette);
 
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
-$inventory-app-theme: mat.define-light-theme((
-  color: (
-    primary: $inventory-app-primary,
-    accent: $inventory-app-accent,
-    warn: $inventory-app-warn,
-  ),
-  typography: mat.define-typography-config(),
-  density: 0
-));
+$inventory-app-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $inventory-app-primary,
+      accent: $inventory-app-accent,
+      warn: $inventory-app-warn,
+    ),
+    typography: mat.define-typography-config(),
+    density: 0,
+  )
+);
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
@@ -37,5 +38,70 @@ $inventory-app-theme: mat.define-light-theme((
 
 /* You can add global styles to this file, and also import other style files */
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+// Global dialog styling
+.product-label-dialog-container {
+  .mat-mdc-dialog-container {
+    padding: 0;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.2);
+  }
+}
+
+// Universal Toolbar Styles
+.universal-toolbar {
+  position: relative;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+
+  .toolbar-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-left: 12px;
+  }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+
+  .add-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    margin-right: 16px;
+
+    mat-icon {
+      margin-right: 8px;
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+  }
+
+  // Responsive design for mobile
+  @media (max-width: 768px) {
+    .toolbar-title {
+      font-size: 1.1rem;
+    }
+
+    .add-btn {
+      span {
+        display: none;
+      }
+
+      mat-icon {
+        margin: 0;
+      }
+    }
+  }
+}

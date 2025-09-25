@@ -1,0 +1,83 @@
+<!-- Product Label Dialog -->
+
+<div class="product-label-dialog">
+  <!-- Dialog Header -->
+  <h2 mat-dialog-title class="dialog-title">
+    <mat-icon>label</mat-icon>
+    Product Label
+  </h2>
+
+  <!-- Dialog Content -->
+  <mat-dialog-content class="dialog-content">
+    <div class="label-container">
+      <!-- QR Code Section -->
+      <div class="qr-section">
+        <div class="qr-code-container">
+          <canvas #qrCanvas class="qr-canvas"></canvas>
+        </div>
+        <p class="qr-label">Scan for product info</p>
+      </div>
+
+      <!-- Product Information Section -->
+      <div class="product-info-section">
+        <div class="product-header">
+          <h3 class="product-name">{{ product.name }}</h3>
+          <p class="product-code">{{ product.code }}</p>
+        </div>
+
+        <mat-divider></mat-divider>
+
+        <div class="product-details">
+          <div class="detail-row">
+            <span class="label">Category:</span>
+            <span class="value">{{ product.category }}</span>
+          </div>
+
+          <div class="detail-row">
+            <span class="label">Price:</span>
+            <span class="value price">{{ formatCurrency(product.price) }}</span>
+          </div>
+
+          <div class="detail-row" *ngIf="product.supplier">
+            <span class="label">Supplier:</span>
+            <span class="value">{{ product.supplier }}</span>
+          </div>
+
+          <div class="detail-row" *ngIf="product.location">
+            <span class="label">Location:</span>
+            <span class="value">{{ product.location }}</span>
+          </div>
+        </div>
+
+        <!-- Barcode-style line for printing -->
+        <div class="barcode-line"></div>
+      </div>
+    </div>
+
+    <!-- Additional Print Information -->
+    <div class="print-info">
+      <div class="print-details">
+        <span>Generated: {{ getCurrentDate() }}</span>
+        <span>{{ getCurrentTime() }}</span>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <!-- Dialog Actions -->
+  <mat-dialog-actions class="dialog-actions">
+    <button mat-button (click)="onClose()" class="close-btn">
+      <mat-icon>close</mat-icon>
+      Close
+    </button>
+
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="onPrint()"
+      class="print-btn"
+    >
+      <mat-icon>print</mat-icon>
+      Print Label
+    </button>
+  </mat-dialog-actions>
+</div>

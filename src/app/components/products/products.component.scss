@@ -1,0 +1,251 @@
+/* Modern Products Component Styles */
+
+// Toolbar styling
+.product-toolbar {
+  position: relative;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+
+  .toolbar-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-left: 12px;
+  }
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+
+  .add-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    margin-right: 16px;
+
+    mat-icon {
+      margin-right: 8px;
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+  }
+}
+
+// Content area
+.content {
+  padding: 24px;
+  background: #f8fafc;
+  min-height: calc(100vh - 64px);
+
+  // Search field styling
+  mat-form-field {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 20px;
+
+    .mat-form-field-appearance-fill .mat-form-field-flex {
+      border-radius: 12px;
+      background-color: white;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .mat-form-field-label {
+      color: #64748b;
+    }
+
+    input {
+      color: #1e293b;
+      font-weight: 500;
+    }
+  }
+
+  // Table styling
+  table {
+    width: 100%;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+
+    .mat-header-cell {
+      background: linear-gradient(90deg, #f1f5f9 0%, #e2e8f0 100%);
+      color: #475569;
+      font-weight: 600;
+      font-size: 0.875rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      border-bottom: 2px solid #cbd5e1;
+      padding: 16px 12px;
+    }
+
+    .mat-cell {
+      color: #334155;
+      font-weight: 500;
+      border-bottom: 1px solid #f1f5f9;
+      padding: 16px 12px;
+
+      &:first-child {
+        font-family: "Courier New", monospace;
+        color: #3b82f6;
+        font-weight: 600;
+      }
+    }
+
+    .mat-row {
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background: #f8fafc;
+      }
+
+      &:nth-child(even) {
+        background: rgba(248, 250, 252, 0.5);
+
+        &:hover {
+          background: #f1f5f9;
+        }
+      }
+    }
+
+    // Low stock styling
+    .low-stock {
+      color: #dc2626 !important;
+      font-weight: 700 !important;
+      position: relative;
+
+      &::after {
+        content: "⚠️";
+        margin-left: 8px;
+        font-size: 0.875rem;
+      }
+    }
+
+    // Action buttons
+    .mat-icon-button {
+      width: 36px;
+      height: 36px;
+      margin: 0 2px;
+      transition: all 0.2s ease;
+
+      &.mat-primary {
+        color: #3b82f6;
+
+        &:hover {
+          background: rgba(59, 130, 246, 0.1);
+          transform: scale(1.1);
+        }
+      }
+
+      &.mat-warn {
+        color: #dc2626;
+
+        &:hover {
+          background: rgba(220, 38, 38, 0.1);
+          transform: scale(1.1);
+        }
+      }
+
+      mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
+    }
+  }
+}
+
+// Category-based row coloring
+.mat-row {
+  &[data-category="Laptops"] {
+    border-left: 4px solid #3b82f6;
+  }
+
+  &[data-category="Keyboards"] {
+    border-left: 4px solid #10b981;
+  }
+
+  &[data-category="Mice"] {
+    border-left: 4px solid #f59e0b;
+  }
+
+  &[data-category="Monitors"] {
+    border-left: 4px solid #8b5cf6;
+  }
+
+  &[data-category="Printers"] {
+    border-left: 4px solid #ef4444;
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .content {
+    padding: 16px;
+
+    mat-form-field {
+      max-width: 100%;
+    }
+
+    table {
+      .mat-header-cell,
+      .mat-cell {
+        padding: 12px 8px;
+        font-size: 0.875rem;
+      }
+
+      .mat-icon-button {
+        width: 32px;
+        height: 32px;
+
+        mat-icon {
+          font-size: 16px;
+          width: 16px;
+          height: 16px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  mat-toolbar {
+    span {
+      font-size: 1.1rem;
+    }
+
+    button {
+      padding: 0 12px;
+      font-size: 0.875rem;
+    }
+  }
+
+  .content {
+    padding: 12px;
+
+    table {
+      font-size: 0.8rem;
+
+      .mat-header-cell,
+      .mat-cell {
+        padding: 8px 6px;
+      }
+    }
+  }
+}
+
+// Loading animation
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+table {
+  animation: fadeIn 0.5s ease-out;
+}
