@@ -1,4 +1,5 @@
 /* Modern Dashboard Component Styles */
+
 .dashboard {
   display: flex;
   flex-direction: column;
@@ -6,8 +7,6 @@
   padding: 24px;
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
   min-height: calc(100vh - 64px);
-  margin-top: -64px;
-  padding-top: 88px;
 }
 
 // Statistics Cards Section

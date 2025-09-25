@@ -2,6 +2,10 @@ import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser, CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
 import { BaseChartDirective } from 'ng2-charts';
 import {
   Chart,
@@ -40,7 +44,16 @@ Chart.register(
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatTableModule, BaseChartDirective],
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatTableModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule,
+    MatMenuModule,
+    BaseChartDirective,
+  ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
@@ -126,4 +139,19 @@ export class DashboardComponent implements OnInit {
     { name: 'USB Hubs', stock: 2 },
     { name: 'HDMI Adapters', stock: 1 },
   ];
+
+  refreshData(): void {
+    console.log('Refreshing dashboard data');
+    // TODO: Implement refresh functionality
+  }
+
+  exportReport(): void {
+    console.log('Exporting dashboard report');
+    // TODO: Implement export functionality
+  }
+
+  viewSettings(): void {
+    console.log('Opening dashboard settings');
+    // TODO: Implement settings view
+  }
 }

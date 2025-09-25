@@ -1,0 +1,298 @@
+// Product Label Dialog Styles
+.product-label-dialog {
+  max-width: 600px;
+  width: 100%;
+
+  .dialog-title {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    margin: 0;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+
+    mat-icon {
+      margin-right: 12px;
+      font-size: 1.8rem;
+      width: 1.8rem;
+      height: 1.8rem;
+    }
+  }
+
+  .dialog-content {
+    padding: 0 !important;
+    margin: 0;
+
+    .label-container {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      gap: 24px;
+      padding: 24px;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 280px;
+
+      @media (max-width: 600px) {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+    }
+
+    .qr-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .qr-code-container {
+        background: white;
+        padding: 16px;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        margin-bottom: 12px;
+
+        .qr-canvas {
+          display: block;
+          border-radius: 8px;
+        }
+      }
+
+      .qr-label {
+        font-size: 0.9rem;
+        color: #555;
+        margin: 0;
+        text-align: center;
+        font-weight: 500;
+      }
+    }
+
+    .product-info-section {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+
+      .product-header {
+        margin-bottom: 16px;
+
+        .product-name {
+          font-size: 1.8rem;
+          font-weight: 700;
+          color: #333;
+          margin: 0 0 8px 0;
+          line-height: 1.2;
+        }
+
+        .product-code {
+          font-family: "Roboto Mono", monospace;
+          font-size: 1rem;
+          background: rgba(102, 126, 234, 0.1);
+          color: #667eea;
+          padding: 6px 12px;
+          border-radius: 20px;
+          display: inline-block;
+          margin: 0;
+          font-weight: 600;
+          border: 2px solid rgba(102, 126, 234, 0.2);
+        }
+      }
+
+      mat-divider {
+        margin: 16px 0;
+        background-color: rgba(0, 0, 0, 0.15);
+      }
+
+      .product-details {
+        .detail-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 8px 0;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+
+          &:last-child {
+            border-bottom: none;
+          }
+
+          .label {
+            font-weight: 600;
+            color: #555;
+            min-width: 80px;
+          }
+
+          .value {
+            color: #333;
+            font-weight: 500;
+
+            &.price {
+              font-size: 1.2rem;
+              font-weight: 700;
+              color: #2e7d32;
+            }
+          }
+        }
+      }
+
+      .barcode-line {
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          transparent 0%,
+          #333 10%,
+          transparent 12%,
+          #333 15%,
+          transparent 17%,
+          #333 20%,
+          transparent 22%,
+          #333 25%,
+          transparent 27%,
+          #333 30%,
+          transparent 100%
+        );
+        background-size: 100px 2px;
+        background-repeat: repeat-x;
+        margin-top: 16px;
+        opacity: 0.3;
+      }
+    }
+
+    .print-info {
+      padding: 16px 24px;
+      background: rgba(255, 255, 255, 0.8);
+      border-top: 1px solid rgba(0, 0, 0, 0.1);
+
+      .print-details {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.8rem;
+        color: #666;
+        font-family: "Roboto Mono", monospace;
+      }
+    }
+  }
+
+  .dialog-actions {
+    padding: 16px 24px !important;
+    background: white;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+
+    .close-btn {
+      color: #666;
+
+      mat-icon {
+        margin-right: 8px;
+      }
+    }
+
+    .print-btn {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+
+      mat-icon {
+        margin-right: 8px;
+      }
+
+      &:hover {
+        background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+      }
+    }
+  }
+}
+
+// Print Styles
+@media print {
+  .product-label-dialog {
+    .dialog-title,
+    .dialog-actions {
+      display: none !important;
+    }
+
+    .dialog-content {
+      .label-container {
+        background: white !important;
+        padding: 16px;
+        box-shadow: none;
+        border: 2px solid #333;
+        border-radius: 0;
+      }
+
+      .print-info {
+        background: white !important;
+        border: none;
+        padding: 8px 0;
+
+        .print-details {
+          font-size: 0.7rem;
+        }
+      }
+    }
+
+    .qr-code-container {
+      box-shadow: none !important;
+      border: 1px solid #333;
+    }
+
+    .product-name {
+      color: #000 !important;
+    }
+
+    .product-code {
+      background: white !important;
+      color: #000 !important;
+      border: 1px solid #333 !important;
+    }
+
+    .detail-row {
+      .value.price {
+        color: #000 !important;
+      }
+    }
+
+    .barcode-line {
+      background: repeating-linear-gradient(
+        90deg,
+        #000 0px,
+        #000 2px,
+        transparent 2px,
+        transparent 4px
+      ) !important;
+      opacity: 1 !important;
+    }
+  }
+}
+
+// Responsive Design
+@media (max-width: 600px) {
+  .product-label-dialog {
+    margin: 16px;
+    max-width: calc(100vw - 32px);
+
+    .dialog-content {
+      .label-container {
+        padding: 16px;
+        gap: 16px;
+      }
+
+      .product-info-section {
+        .product-header {
+          text-align: center;
+
+          .product-name {
+            font-size: 1.4rem;
+          }
+        }
+      }
+    }
+
+    .dialog-actions {
+      flex-direction: column;
+
+      button {
+        width: 100%;
+        margin: 4px 0;
+      }
+    }
+  }
+}

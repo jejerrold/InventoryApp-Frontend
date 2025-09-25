@@ -1,0 +1,355 @@
+<!-- Report Management Header -->
+<mat-toolbar color="primary" class="universal-toolbar">
+  <mat-icon>assessment</mat-icon>
+  <span class="toolbar-title">Report Management</span>
+  <span class="spacer"></span>
+  <button mat-raised-button (click)="createNewReport()" class="add-btn">
+    <mat-icon>add</mat-icon>
+    <span>New Report</span>
+  </button>
+  <button mat-icon-button [matMenuTriggerFor]="menu" title="More options">
+    <mat-icon>more_vert</mat-icon>
+  </button>
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item (click)="exportReportList()">
+      <mat-icon>download</mat-icon>
+      Export Report List
+    </button>
+    <button mat-menu-item (click)="importReportTemplates()">
+      <mat-icon>upload</mat-icon>
+      Import Templates
+    </button>
+    <button mat-menu-item (click)="openReportSettings()">
+      <mat-icon>settings</mat-icon>
+      Settings
+    </button>
+  </mat-menu>
+</mat-toolbar>
+
+<!-- Statistics Cards -->
+<div class="stats-container">
+  <mat-card class="stat-card total">
+    <mat-card-content>
+      <div class="stat-content">
+        <div class="stat-icon">
+          <mat-icon>assessment</mat-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-number">{{ totalReports }}</span>
+          <span class="stat-label">Total Templates</span>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="stat-card active">
+    <mat-card-content>
+      <div class="stat-content">
+        <div class="stat-icon">
+          <mat-icon>play_circle</mat-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-number">{{ activeReports }}</span>
+          <span class="stat-label">Active Reports</span>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="stat-card monthly">
+    <mat-card-content>
+      <div class="stat-content">
+        <div class="stat-icon">
+          <mat-icon>calendar_month</mat-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-number">{{ reportsThisMonth }}</span>
+          <span class="stat-label">This Month</span>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="stat-card downloads">
+    <mat-card-content>
+      <div class="stat-content">
+        <div class="stat-icon">
+          <mat-icon>download</mat-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-number">{{ totalDownloads }}</span>
+          <span class="stat-label">Downloads</span>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<!-- Filters Section -->
+<div class="filters-container">
+  <mat-card class="filters-card">
+    <mat-card-content>
+      <div class="filter-row">
+        <!-- Category Filter -->
+        <mat-form-field appearance="outline" class="category-filter">
+          <mat-label>Category</mat-label>
+          <mat-select [(value)]="selectedCategory">
+            <mat-option value="all">All Categories</mat-option>
+            <mat-option value="inventory">Inventory</mat-option>
+            <mat-option value="sales">Sales</mat-option>
+            <mat-option value="customers">Customers</mat-option>
+            <mat-option value="orders">Orders</mat-option>
+            <mat-option value="financial">Financial</mat-option>
+            <mat-option value="products">Products</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Status Filter -->
+        <mat-form-field appearance="outline" class="status-filter">
+          <mat-label>Status</mat-label>
+          <mat-select [(value)]="selectedStatus">
+            <mat-option value="all">All Status</mat-option>
+            <mat-option value="active">Active</mat-option>
+            <mat-option value="draft">Draft</mat-option>
+            <mat-option value="archived">Archived</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <!-- Results Counter -->
+        <div class="results-info">
+          <span class="results-count"
+            >{{ filterByStatus(selectedStatus).length }} templates found</span
+          >
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<!-- Report Templates Grid -->
+<div class="templates-container">
+  <h2 class="section-title">Report Templates</h2>
+  <div class="templates-grid">
+    <mat-card
+      class="template-card"
+      *ngFor="let report of filterByStatus(selectedStatus)"
+    >
+      <mat-card-header>
+        <div mat-card-avatar class="template-avatar">
+          <mat-icon>{{ report.icon }}</mat-icon>
+        </div>
+        <mat-card-title>{{ report.name }}</mat-card-title>
+        <mat-card-subtitle>{{ report.category | titlecase }}</mat-card-subtitle>
+        <div class="card-actions">
+          <button mat-icon-button [matMenuTriggerFor]="templateMenu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #templateMenu="matMenu">
+            <button mat-menu-item (click)="editReport(report)">
+              <mat-icon>edit</mat-icon>
+              Edit Template
+            </button>
+            <button mat-menu-item (click)="duplicateReport(report)">
+              <mat-icon>content_copy</mat-icon>
+              Duplicate
+            </button>
+            <button mat-menu-item (click)="scheduleReport(report)">
+              <mat-icon>schedule</mat-icon>
+              Schedule
+            </button>
+            <mat-divider></mat-divider>
+            <button
+              mat-menu-item
+              (click)="deleteReport(report)"
+              class="warn-action"
+            >
+              <mat-icon>delete</mat-icon>
+              Delete
+            </button>
+          </mat-menu>
+        </div>
+      </mat-card-header>
+
+      <mat-card-content>
+        <p class="template-description">{{ report.description }}</p>
+
+        <div class="template-metadata">
+          <div class="metadata-item">
+            <mat-icon>schedule</mat-icon>
+            <span>{{ report.frequency }}</span>
+          </div>
+          <div class="metadata-item" *ngIf="report.lastGenerated">
+            <mat-icon>access_time</mat-icon>
+            <span>{{ formatDate(report.lastGenerated) }}</span>
+          </div>
+          <div class="metadata-item" *ngIf="report.size">
+            <mat-icon>storage</mat-icon>
+            <span>{{ report.size }}</span>
+          </div>
+        </div>
+
+        <div class="status-formats">
+          <mat-chip [color]="getStatusColor(report.status)" selected>
+            {{ report.status | titlecase }}
+          </mat-chip>
+          <div class="format-chips">
+            <mat-chip *ngFor="let format of report.format" class="format-chip">
+              {{ format }}
+            </mat-chip>
+          </div>
+        </div>
+      </mat-card-content>
+
+      <mat-card-actions>
+        <button
+          mat-raised-button
+          color="primary"
+          (click)="generateReport(report)"
+          [disabled]="report.status !== 'active'"
+        >
+          <mat-icon>play_arrow</mat-icon>
+          Generate Now
+        </button>
+        <button mat-button (click)="scheduleReport(report)">
+          <mat-icon>schedule</mat-icon>
+          Schedule
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>
+
+<!-- Report History Section -->
+<div class="history-container">
+  <mat-card class="history-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>history</mat-icon>
+        Recent Report History
+      </mat-card-title>
+      <div class="header-actions">
+        <button mat-button>
+          <mat-icon>visibility</mat-icon>
+          View All
+        </button>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content>
+      <table mat-table [dataSource]="reportHistory" class="history-table">
+        <!-- Report Name Column -->
+        <ng-container matColumnDef="reportName">
+          <th mat-header-cell *matHeaderCellDef>Report Name</th>
+          <td mat-cell *matCellDef="let item">
+            <div class="report-name-cell">
+              <mat-icon class="report-icon">description</mat-icon>
+              <span class="report-name">{{ item.reportName }}</span>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Generated Date Column -->
+        <ng-container matColumnDef="generatedDate">
+          <th mat-header-cell *matHeaderCellDef>Generated</th>
+          <td mat-cell *matCellDef="let item">
+            <div class="date-cell">
+              <span class="date">{{ formatDate(item.generatedDate) }}</span>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Generated By Column -->
+        <ng-container matColumnDef="generatedBy">
+          <th mat-header-cell *matHeaderCellDef>Generated By</th>
+          <td mat-cell *matCellDef="let item">
+            <div class="user-cell">
+              <mat-icon class="user-icon">person</mat-icon>
+              <span>{{ item.generatedBy }}</span>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Format Column -->
+        <ng-container matColumnDef="format">
+          <th mat-header-cell *matHeaderCellDef>Format</th>
+          <td mat-cell *matCellDef="let item">
+            <mat-chip class="format-chip">{{ item.format }}</mat-chip>
+          </td>
+        </ng-container>
+
+        <!-- Size Column -->
+        <ng-container matColumnDef="size">
+          <th mat-header-cell *matHeaderCellDef>Size</th>
+          <td mat-cell *matCellDef="let item">{{ item.size }}</td>
+        </ng-container>
+
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let item">
+            <mat-chip
+              [color]="getStatusColor(item.status)"
+              selected
+              class="status-chip"
+            >
+              <mat-icon *ngIf="item.status === 'completed'"
+                >check_circle</mat-icon
+              >
+              <mat-icon *ngIf="item.status === 'processing'"
+                >hourglass_empty</mat-icon
+              >
+              <mat-icon *ngIf="item.status === 'failed'">error</mat-icon>
+              {{ item.status | titlecase }}
+            </mat-chip>
+          </td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Actions</th>
+          <td mat-cell *matCellDef="let item">
+            <div class="action-buttons">
+              <button
+                mat-icon-button
+                [disabled]="item.status !== 'completed'"
+                (click)="downloadReport(item)"
+                title="Download"
+              >
+                <mat-icon>download</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                [disabled]="item.status !== 'completed'"
+                (click)="viewReport(item)"
+                title="View"
+              >
+                <mat-icon>visibility</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                (click)="deleteHistoryItem(item)"
+                title="Delete"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedHistoryColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedHistoryColumns"
+          class="history-row"
+        ></tr>
+      </table>
+
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="reportHistory.length === 0">
+        <mat-icon>history</mat-icon>
+        <h3>No report history found</h3>
+        <p>Generate your first report to see history here</p>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
