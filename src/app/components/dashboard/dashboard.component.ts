@@ -45,14 +45,14 @@ Chart.register(
   selector: 'app-dashboard',
   standalone: true,
   imports: [
-    CommonModule, 
-    MatCardModule, 
-    MatTableModule, 
+    CommonModule,
+    MatCardModule,
+    MatTableModule,
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
     MatMenuModule,
-    BaseChartDirective
+    BaseChartDirective,
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],

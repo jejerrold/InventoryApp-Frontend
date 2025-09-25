@@ -36,6 +36,13 @@ const routeConfig: Routes = [
         (mod) => mod.CustomersComponent
       ),
   },
+  {
+    path: 'reports',
+    loadComponent: () =>
+      import('./components/reports/reports.component').then(
+        (mod) => mod.ReportsComponent
+      ),
+  },
 ];
 
 export default routeConfig;

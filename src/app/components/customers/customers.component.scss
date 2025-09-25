@@ -1,35 +1,4 @@
 // Customer Management Styles
-.customer-toolbar {
-  position: relative;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-
-  .toolbar-title {
-    font-size: 1.4rem;
-    font-weight: 600;
-    margin-left: 12px;
-  }
-
-  .spacer {
-    flex: 1 1 auto;
-  }
-
-  .add-btn {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    margin-right: 16px;
-
-    mat-icon {
-      margin-right: 8px;
-    }
-
-    &:hover {
-      background: rgba(255, 255, 255, 0.3);
-    }
-  }
-}
-
 // Statistics Cards
 .stats-container {
   padding: 24px;
