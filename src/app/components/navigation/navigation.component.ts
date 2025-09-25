@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { MatListModule } from '@angular/material/list';
-import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatDrawer, MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink, RouterOutlet } from '@angular/router';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
   selector: 'app-navigation',
@@ -12,11 +13,12 @@ import { RouterLink, RouterOutlet } from '@angular/router';
     MatListModule,
     MatIconModule,
     RouterOutlet,
-    RouterLink,
+    MatToolbarModule,
   ],
   templateUrl: './navigation.component.html',
   styleUrls: ['./navigation.component.scss'],
 })
 export class NavigationComponent {
+  @ViewChild('drawer') drawer!: MatDrawer;
   expand: boolean = true;
 }
