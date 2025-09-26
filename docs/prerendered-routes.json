@@ -4,6 +4,7 @@
     "/customers",
     "/orders",
     "/orders/create",
+    "/orders/tag-references",
     "/products",
     "/reports"
   ]

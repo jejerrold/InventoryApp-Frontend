@@ -363,21 +363,15 @@ export class OrdersComponent implements OnInit {
 
   // Order management methods
   addOrder() {
-    // Navigate to the add order page
-    // (Assumes you have a route like /orders/add)
-    // Inject Router in the constructor: constructor(private router: Router) {}
     this.router.navigate(['/orders/create']);
-    // TODO: Implement add order dialog
   }
 
   viewOrder(order: Order) {
     this.router.navigate(['/orders/details', order.id]);
-    // TODO: Implement order details dialog
   }
 
   editOrder(order: Order) {
-    console.log('Edit order:', order);
-    // TODO: Implement edit order dialog
+    this.router.navigate(['/orders/details', order.id, 'edit']);
   }
 
   printOrder(order: Order) {

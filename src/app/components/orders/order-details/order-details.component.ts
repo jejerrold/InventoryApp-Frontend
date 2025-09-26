@@ -167,12 +167,13 @@ export class OrderDetailsComponent implements OnInit {
       if (isPlatformBrowser(this.platformId)) {
         baseUrl =
           this.document.defaultView?.location?.origin ||
-          'https://jejerrold.github.io/InventoryApp-Frontend';
+          'http://localhost:4200';
       } else {
-        baseUrl = 'https://jejerrold.github.io/InventoryApp-Frontend'; // fallback for SSR
+        baseUrl = 'http://localhost:4200'; // fallback for SSR
       }
 
-      const orderUrl = `${baseUrl}/orders/tag/${this.order.id}`;
+      // Use the correct route path with query parameters
+      const orderUrl = `${baseUrl}/orders/tag-references?orderId=${this.order.id}`;
       console.log('Generated QR URL:', orderUrl); // Debug log
 
       const qrOptions: QRCode.QRCodeToDataURLOptions = {

@@ -22,38 +22,34 @@ const routeConfig: Routes = [
         './components/products/product-detail/product-detail.component'
       ).then((mod) => mod.ProductDetailComponent),
   },
+  // Orders routes - specific routes first
+  {
+    path: 'orders/create',
+    loadComponent: () =>
+      import('./components/orders/create-order/create-order.component').then(
+        (mod) => mod.CreateOrderComponent
+      ),
+  },
+  {
+    path: 'orders/tag-references',
+    loadComponent: () =>
+      import(
+        './components/orders/order-tag-references/order-tag-references.component'
+      ).then((mod) => mod.OrderTagReferencesComponent),
+  },
+  {
+    path: 'orders/details/:id',
+    loadComponent: () =>
+      import('./components/orders/order-details/order-details.component').then(
+        (mod) => mod.OrderDetailsComponent
+      ),
+  },
   {
     path: 'orders',
-    children: [
-      {
-        path: '',
-        loadComponent: () =>
-          import('./components/orders/orders.component').then(
-            (mod) => mod.OrdersComponent
-          ),
-      },
-      {
-        path: 'create',
-        loadComponent: () =>
-          import(
-            './components/orders/create-order/create-order.component'
-          ).then((mod) => mod.CreateOrderComponent),
-      },
-      {
-        path: 'details/:id',
-        loadComponent: () =>
-          import(
-            './components/orders/order-details/order-details.component'
-          ).then((mod) => mod.OrderDetailsComponent),
-      },
-      {
-        path: 'tag/:orderId',
-        loadComponent: () =>
-          import(
-            './components/orders/order-tag-references/order-tag-references.component'
-          ).then((mod) => mod.OrderTagReferencesComponent),
-      },
-    ],
+    loadComponent: () =>
+      import('./components/orders/orders.component').then(
+        (mod) => mod.OrdersComponent
+      ),
   },
   {
     path: 'customers',
