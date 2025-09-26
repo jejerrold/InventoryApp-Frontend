@@ -12,7 +12,6 @@ import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { BarcodeScannerLivestreamModule } from 'ngx-barcode-scanner';
 
 interface Order {
   id: string;
@@ -32,7 +31,7 @@ interface TaggedBarcode {
 @Component({
   selector: 'app-order-tag-references',
   standalone: true,
-  imports: [CommonModule, FormsModule, BarcodeScannerLivestreamModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './order-tag-references.component.html',
   styleUrl: './order-tag-references.component.scss',
 })
