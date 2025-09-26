@@ -260,16 +260,32 @@
 
   .scanner-container {
     position: relative;
-    max-width: 400px;
+    max-width: 500px;
     margin: 0 auto;
-    border: 2px solid #007bff;
-    border-radius: 8px;
+    border: 3px solid #007bff;
+    border-radius: 12px;
     overflow: hidden;
+    background: #000;
 
-    video {
+    ::ng-deep barcode-scanner-livestream {
       width: 100%;
-      height: auto;
+      height: 400px;
       display: block;
+
+      video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 8px;
+      }
+
+      canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+      }
     }
 
     .scanner-overlay {
@@ -278,40 +294,92 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(0, 0, 0, 0.3);
+      background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.6) 0%,
+        rgba(0, 0, 0, 0.2) 40%,
+        rgba(0, 0, 0, 0.2) 60%,
+        rgba(0, 0, 0, 0.6) 100%
+      );
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-direction: column;
+      pointer-events: none;
 
-      .scan-line {
-        width: 80%;
-        height: 2px;
-        background: #ff0000;
-        animation: scanLine 2s linear infinite;
-      }
-
-      p {
+      .scan-instructions {
+        text-align: center;
         color: white;
-        margin-top: 20px;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+
+        p {
+          margin-bottom: 20px;
+          font-size: 18px;
+          font-weight: 700;
+          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+          background: rgba(0, 0, 0, 0.5);
+          padding: 10px 20px;
+          border-radius: 20px;
+        }
+
+        .scan-frame {
+          width: 250px;
+          height: 150px;
+          border: 3px solid #00ff00;
+          border-radius: 12px;
+          margin: 0 auto;
+          position: relative;
+          box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+          animation: scanPulse 2s infinite;
+
+          &::before,
+          &::after {
+            content: "";
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            border: 4px solid #ff0000;
+          }
+
+          &::before {
+            top: -4px;
+            left: -4px;
+            border-right: none;
+            border-bottom: none;
+            border-radius: 8px 0 0 0;
+          }
+
+          &::after {
+            bottom: -4px;
+            right: -4px;
+            border-left: none;
+            border-top: none;
+            border-radius: 0 0 8px 0;
+          }
+        }
       }
     }
   }
 
   .scanner-controls {
     text-align: center;
-    margin-top: 15px;
+    margin-top: 20px;
+
+    .btn {
+      padding: 12px 24px;
+      font-size: 16px;
+      font-weight: 600;
+    }
   }
 }
 
-@keyframes scanLine {
+@keyframes scanPulse {
   0%,
   100% {
-    transform: translateY(-50px);
+    border-color: #00ff00;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
   }
   50% {
-    transform: translateY(50px);
+    border-color: #ffff00;
+    box-shadow: 0 0 30px rgba(255, 255, 0, 0.7);
   }
 }
 

@@ -12,6 +12,7 @@ import { CommonModule, isPlatformBrowser, DOCUMENT } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { BarcodeScannerLivestreamModule } from 'ngx-barcode-scanner';
 
 interface Order {
   id: string;
@@ -31,12 +32,11 @@ interface TaggedBarcode {
 @Component({
   selector: 'app-order-tag-references',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, BarcodeScannerLivestreamModule],
   templateUrl: './order-tag-references.component.html',
   styleUrl: './order-tag-references.component.scss',
 })
 export class OrderTagReferencesComponent implements OnInit, OnDestroy {
-  @ViewChild('videoElement') videoElement!: ElementRef<HTMLVideoElement>;
   @ViewChild('barcodeInput') barcodeInput!: ElementRef<HTMLInputElement>;
 
   // Order selection
@@ -51,9 +51,10 @@ export class OrderTagReferencesComponent implements OnInit, OnDestroy {
   editingBarcode: TaggedBarcode | null = null;
   editingIndex = -1;
 
-  // Scanner
+  // Scanner properties
   isScanning = false;
-  stream: MediaStream | null = null;
+  currentDevice: MediaDeviceInfo | undefined;
+  availableDevices: MediaDeviceInfo[] = [];
 
   // UI state
   showOrderSelection = false;
@@ -86,7 +87,6 @@ export class OrderTagReferencesComponent implements OnInit, OnDestroy {
     console.log('Route snapshot url:', this.route.snapshot.url);
     console.log('Route snapshot fragment:', this.route.snapshot.fragment);
 
-    // Check current URL directly
     if (isPlatformBrowser(this.platformId)) {
       console.log('Current URL:', this.document.defaultView?.location?.href);
       console.log(
@@ -94,7 +94,6 @@ export class OrderTagReferencesComponent implements OnInit, OnDestroy {
         this.document.defaultView?.location?.search
       );
 
-      // Parse URL manually as fallback
       const urlParams = new URLSearchParams(
         this.document.defaultView?.location?.search
       );
@@ -108,16 +107,13 @@ export class OrderTagReferencesComponent implements OnInit, OnDestroy {
   private setupQueryParamsSubscription() {
     console.log('Setting up query params subscription...');
 
-    // Try multiple approaches
+    this.queryParamsSubscription = this.route.queryParams.subscribe(
+      (params) => {
+        console.log('Observable params received:', params);
+        this.handleQueryParams(params);
+      }
+    );
 
-    // Approach 1: Observable subscription
-
-    this.queryParamsSubscription = this.route.params.subscribe((params) => {
-      console.log('Observable params received:', params);
-      this.handleQueryParams(params);
-    });
-
-    // Approach 2: Snapshot fallback
     setTimeout(() => {
       console.log('Checking snapshot params after timeout...');
       const snapshotParams = this.route.snapshot.queryParams;
@@ -128,7 +124,6 @@ export class OrderTagReferencesComponent implements OnInit, OnDestroy {
       }
     }, 100);
 
-    // Approach 3: Manual URL parsing fallback
     if (isPlatformBrowser(this.platformId)) {
       setTimeout(() => {
         this.parseUrlManually();
@@ -245,7 +240,6 @@ export class OrderTagReferencesComponent implements OnInit, OnDestroy {
     if (targetOrder) {
       console.log('Target order found, selecting:', targetOrder);
       this.selectOrder(targetOrder);
-      // Scroll to barcode input section
       setTimeout(() => {
         this.scrollToBarcodeInput();
       }, 500);
@@ -267,14 +261,11 @@ export class OrderTagReferencesComponent implements OnInit, OnDestroy {
     this.selectedOrder = order;
     this.loadExistingBarcodes(order.id);
 
-    // Update filtered orders to show the selected order at the top
     this.filteredOrders = this.filteredOrders.filter((o) => o.id !== order.id);
     this.filteredOrders.unshift(order);
   }
 
   loadExistingBarcodes(orderId: string) {
-    // Load existing barcodes for the selected order
-    // Mock data - replace with actual service call
     this.taggedBarcodes = [];
   }
 
@@ -287,7 +278,6 @@ export class OrderTagReferencesComponent implements OnInit, OnDestroy {
       scanType: 'manual',
     };
 
-    // Check for duplicates
     const exists = this.taggedBarcodes.some((b) => b.code === barcode.code);
     if (exists) {
       alert('This barcode has already been added to this order.');
@@ -306,7 +296,10 @@ export class OrderTagReferencesComponent implements OnInit, OnDestroy {
   }
 
   editBarcode(index: number) {
-    this.editingBarcode = { ...this.taggedBarcodes[index] };
+    this.editingBarcode = {
+      ...this.taggedBarcodes[index],
+      notes: this.taggedBarcodes[index].notes || '',
+    };
     this.editingIndex = index;
   }
 
@@ -329,44 +322,80 @@ export class OrderTagReferencesComponent implements OnInit, OnDestroy {
     }
 
     try {
-      if (navigator && navigator.mediaDevices) {
-        this.stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: 'environment' },
-        });
+      // Get available camera devices
+      if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        this.availableDevices = devices.filter(
+          (device) => device.kind === 'videoinput'
+        );
 
-        if (this.videoElement) {
-          this.videoElement.nativeElement.srcObject = this.stream;
-          this.isScanning = true;
-
-          // Start barcode detection (simplified - use a proper barcode library)
-          this.detectBarcode();
-        }
-      } else {
-        throw new Error('MediaDevices not supported');
+        // Select the first back camera if available, otherwise use the first camera
+        this.currentDevice =
+          this.availableDevices.find((device) =>
+            device.label.toLowerCase().includes('back')
+          ) || this.availableDevices[0];
       }
+
+      this.isScanning = true;
+      console.log('Barcode scanner started');
     } catch (error) {
-      console.error('Error accessing camera:', error);
-      alert('Unable to access camera. Please check permissions.');
+      console.error('Error starting barcode scanner:', error);
+      alert('Unable to start barcode scanner. Please check permissions.');
+      this.isScanning = false;
     }
   }
 
   stopScanning() {
-    if (this.stream) {
-      this.stream.getTracks().forEach((track) => track.stop());
-      this.stream = null;
-    }
     this.isScanning = false;
+    console.log('Barcode scanner stopped');
   }
 
-  detectBarcode() {
-    // Simplified barcode detection - replace with proper library like ZXing
-    // This is just a placeholder for demonstration
-    setTimeout(() => {
-      if (this.isScanning) {
-        // Simulate barcode detection
-        this.detectBarcode();
+  onValueChanges(result: any) {
+    console.log('Barcode detected:', result);
+
+    if (result && result.codeResult && result.codeResult.code) {
+      this.onBarcodeScanned(result.codeResult.code);
+    }
+  }
+
+  onStarted() {
+    console.log('Scanner started');
+  }
+
+  onStopped() {
+    console.log('Scanner stopped');
+  }
+
+  onBarcodeScanned(result: string) {
+    console.log('Barcode scanned:', result);
+
+    if (result && result.trim()) {
+      const barcode: TaggedBarcode = {
+        code: result.trim(),
+        timestamp: new Date(),
+        scanType: 'camera',
+      };
+
+      // Check for duplicates
+      const exists = this.taggedBarcodes.some((b) => b.code === barcode.code);
+      if (exists) {
+        alert('This barcode has already been added to this order.');
+        return;
       }
-    }, 100);
+
+      this.taggedBarcodes.push(barcode);
+
+      // Auto-focus back to manual input after scanning
+      this.focusBarcodeInput();
+
+      // Visual feedback for successful scan
+      this.showScanSuccess();
+    }
+  }
+
+  showScanSuccess() {
+    console.log('Barcode added successfully');
+    // You can add toast notification or temporary highlight here
   }
 
   clearInput() {
@@ -438,7 +467,6 @@ export class OrderTagReferencesComponent implements OnInit, OnDestroy {
   }
 
   previewReport() {
-    // Generate and display a preview report
     console.log('Preview report for barcodes:', this.taggedBarcodes);
     // TODO: Implement report preview
   }

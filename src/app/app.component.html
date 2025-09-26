@@ -1,2 +1,6 @@
+@if(!isNoHeaderRoute) {
 <app-toolbar class="app-toolbar-section" />
 <app-navigation />
+} @else {
+<router-outlet />
+}

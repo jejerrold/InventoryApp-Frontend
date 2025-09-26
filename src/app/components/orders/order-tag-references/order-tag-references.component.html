@@ -142,10 +142,28 @@
     <!-- Camera Scanner -->
     <div class="camera-scanner" *ngIf="isScanning">
       <div class="scanner-container">
-        <video #videoElement autoplay playsinline></video>
+        <barcode-scanner-livestream
+          [type]="[
+            'code_128',
+            'code_39',
+            'ean',
+            'ean_8',
+            'ean_13',
+            'upc',
+            'upc_a',
+            'upc_e'
+          ]"
+          [deviceId]="currentDevice?.deviceId || ''"
+          (valueChanges)="onValueChanges($event)"
+          (started)="onStarted()"
+          (stopped)="onStopped()"
+        ></barcode-scanner-livestream>
+
         <div class="scanner-overlay">
-          <div class="scan-line"></div>
-          <p>Position barcode within the frame</p>
+          <div class="scan-instructions">
+            <p>Position barcode within the frame</p>
+            <div class="scan-frame"></div>
+          </div>
         </div>
       </div>
       <div class="scanner-controls">
