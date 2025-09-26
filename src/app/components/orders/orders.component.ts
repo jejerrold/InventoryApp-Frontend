@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
@@ -12,6 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatMenuModule } from '@angular/material/menu';
 import { Order } from '../../models/order';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-orders',
@@ -59,6 +60,7 @@ export class OrdersComponent implements OnInit {
   searchTerm = '';
   statusFilter = 'all';
   priorityFilter = 'all';
+  router = inject(Router);
 
   ngOnInit() {
     this.loadOrders();
@@ -361,12 +363,15 @@ export class OrdersComponent implements OnInit {
 
   // Order management methods
   addOrder() {
-    console.log('Add new order');
+    // Navigate to the add order page
+    // (Assumes you have a route like /orders/add)
+    // Inject Router in the constructor: constructor(private router: Router) {}
+    this.router.navigate(['/orders/create']);
     // TODO: Implement add order dialog
   }
 
   viewOrder(order: Order) {
-    console.log('View order:', order);
+    this.router.navigate(['/orders/details', order.id]);
     // TODO: Implement order details dialog
   }
 

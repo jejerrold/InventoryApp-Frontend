@@ -1,0 +1,669 @@
+.order-tag-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #f8f9fa;
+  min-height: 100vh;
+}
+
+.header {
+  margin-bottom: 30px;
+  text-align: center;
+
+  h2 {
+    color: #333;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .subtitle {
+    color: #666;
+    margin: 0;
+  }
+
+  .pre-selected-info {
+    margin-top: 15px;
+
+    .info-badge {
+      display: inline-block;
+      background: #e3f2fd;
+      color: #1565c0;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 500;
+      border: 1px solid #bbdefb;
+    }
+  }
+}
+
+// Order Selection Section
+.order-selection-section {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+  h3 {
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .search-input-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+
+    input {
+      flex: 1;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+  }
+
+  .order-list {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #eee;
+    border-radius: 4px;
+
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: #f8f9fa;
+      }
+
+      &.selected {
+        background: #e3f2fd;
+        border-left: 4px solid #007bff;
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      .order-info {
+        flex: 1;
+
+        .order-number {
+          font-weight: 600;
+          color: #333;
+          margin-bottom: 4px;
+        }
+
+        .customer-name {
+          color: #666;
+          font-size: 14px;
+          margin-bottom: 4px;
+        }
+      }
+
+      .order-total {
+        font-weight: 600;
+        color: #28a745;
+        font-size: 16px;
+      }
+    }
+  }
+
+  &.collapsed {
+    .selection-content {
+      display: none;
+    }
+  }
+
+  .section-header {
+    cursor: pointer;
+    user-select: none;
+
+    h3 {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      color: #333;
+      font-size: 18px;
+      font-weight: 600;
+      padding: 10px 15px;
+      background: #f8f9fa;
+      border-radius: 4px;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background: #e9ecef;
+      }
+
+      .toggle-icon {
+        font-size: 14px;
+        color: #666;
+      }
+    }
+  }
+
+  .selected-order {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    border-left: 4px solid #007bff;
+
+    h4 {
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .info-row {
+      margin-bottom: 8px;
+
+      strong {
+        color: #333;
+        margin-right: 8px;
+      }
+    }
+
+    .change-order-actions {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #eee;
+      text-align: center;
+    }
+  }
+}
+
+// Status badges
+.status-badge {
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+
+  &.status-pending {
+    background: #fff3cd;
+    color: #856404;
+  }
+  &.status-confirmed {
+    background: #d1ecf1;
+    color: #0c5460;
+  }
+  &.status-processing {
+    background: #f8d7da;
+    color: #721c24;
+  }
+  &.status-shipped {
+    background: #d4edda;
+    color: #155724;
+  }
+  &.status-delivered {
+    background: #d1ecf1;
+    color: #0c5460;
+  }
+}
+
+// Barcode Input Section
+.barcode-input-section {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+  h3 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .barcode-input-group {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+
+    .barcode-input {
+      flex: 1;
+      padding: 12px;
+      font-size: 16px;
+      font-family: "Courier New", monospace;
+      border: 2px solid #007bff;
+      border-radius: 4px;
+
+      &:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+      }
+    }
+  }
+
+  .input-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+}
+
+// Camera Scanner
+.camera-scanner {
+  margin-top: 20px;
+
+  .scanner-container {
+    position: relative;
+    max-width: 400px;
+    margin: 0 auto;
+    border: 2px solid #007bff;
+    border-radius: 8px;
+    overflow: hidden;
+
+    video {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .scanner-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+
+      .scan-line {
+        width: 80%;
+        height: 2px;
+        background: #ff0000;
+        animation: scanLine 2s linear infinite;
+      }
+
+      p {
+        color: white;
+        margin-top: 20px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+      }
+    }
+  }
+
+  .scanner-controls {
+    text-align: center;
+    margin-top: 15px;
+  }
+}
+
+@keyframes scanLine {
+  0%,
+  100% {
+    transform: translateY(-50px);
+  }
+  50% {
+    transform: translateY(50px);
+  }
+}
+
+// Tagged Barcodes Section
+.tagged-barcodes-section {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+  h3 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .barcodes-list {
+    max-height: 400px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+
+    .barcode-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid #eee;
+      border-radius: 4px;
+      margin-bottom: 8px;
+
+      .barcode-info {
+        flex: 1;
+
+        .barcode-code {
+          font-family: "Courier New", monospace;
+          font-weight: 600;
+          color: #333;
+          font-size: 16px;
+          margin-bottom: 4px;
+        }
+
+        .barcode-meta {
+          font-size: 12px;
+          color: #666;
+
+          .timestamp {
+            margin-right: 15px;
+          }
+
+          .scan-type {
+            padding: 2px 6px;
+            background: #e9ecef;
+            border-radius: 10px;
+            text-transform: uppercase;
+          }
+        }
+      }
+
+      .barcode-actions {
+        display: flex;
+        gap: 8px;
+      }
+    }
+  }
+
+  .bulk-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+}
+
+// Statistics Section
+.statistics-section {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+  h3 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+
+    .stat-item {
+      text-align: center;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      border-left: 4px solid #007bff;
+
+      .stat-number {
+        font-size: 32px;
+        font-weight: 700;
+        color: #007bff;
+        margin-bottom: 8px;
+      }
+
+      .stat-label {
+        font-size: 14px;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+    }
+  }
+}
+
+// Form Actions
+.form-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  padding-top: 20px;
+}
+
+// Button Styles
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+  font-size: 14px;
+
+  &.btn-primary {
+    background: #007bff;
+    color: white;
+
+    &:hover:not(:disabled) {
+      background: #0056b3;
+    }
+
+    &:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+    }
+  }
+
+  &.btn-secondary {
+    background: #6c757d;
+    color: white;
+
+    &:hover {
+      background: #545b62;
+    }
+  }
+
+  &.btn-success {
+    background: #28a745;
+    color: white;
+
+    &:hover {
+      background: #218838;
+    }
+  }
+
+  &.btn-danger {
+    background: #dc3545;
+    color: white;
+
+    &:hover {
+      background: #c82333;
+    }
+  }
+
+  &.btn-outline-primary {
+    background: transparent;
+    color: #007bff;
+    border: 1px solid #007bff;
+
+    &:hover {
+      background: #007bff;
+      color: white;
+    }
+  }
+
+  &.btn-outline-secondary {
+    background: transparent;
+    color: #6c757d;
+    border: 1px solid #6c757d;
+
+    &:hover {
+      background: #6c757d;
+      color: white;
+    }
+  }
+
+  &.btn-outline-warning {
+    background: transparent;
+    color: #ffc107;
+    border: 1px solid #ffc107;
+
+    &:hover {
+      background: #ffc107;
+      color: #212529;
+    }
+  }
+
+  &.btn-sm {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}
+
+// Modal Styles
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow: hidden;
+}
+
+.modal-header {
+  padding: 20px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h3 {
+    margin: 0;
+    color: #333;
+  }
+
+  .close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #666;
+    cursor: pointer;
+
+    &:hover {
+      color: #333;
+    }
+  }
+}
+
+.modal-body {
+  padding: 20px;
+
+  .form-group {
+    margin-bottom: 15px;
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: #333;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+
+      &:focus {
+        outline: none;
+        border-color: #007bff;
+        box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+      }
+    }
+  }
+}
+
+.modal-footer {
+  padding: 20px;
+  border-top: 1px solid #eee;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .order-tag-container {
+    padding: 10px;
+  }
+
+  .barcode-input-group {
+    flex-direction: column;
+  }
+
+  .input-actions,
+  .bulk-actions,
+  .form-actions {
+    flex-direction: column;
+
+    .btn {
+      width: 100%;
+    }
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .barcode-item {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start !important;
+
+    .barcode-actions {
+      width: 100%;
+      justify-content: flex-end;
+    }
+  }
+
+  .pre-selected-info {
+    .info-badge {
+      display: block;
+      margin: 10px auto;
+      max-width: 300px;
+      text-align: center;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}

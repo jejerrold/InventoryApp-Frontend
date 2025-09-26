@@ -1,0 +1,313 @@
+<div class="order-tag-container">
+  <div class="header">
+    <h2>Tag Barcodes to Order</h2>
+    <p class="subtitle">Scan or enter barcodes to associate with an order</p>
+    <!-- Show pre-selected order info -->
+    <div class="pre-selected-info" *ngIf="selectedOrder">
+      <span class="info-badge">
+        📋 Working with Order: {{ selectedOrder.orderNumber }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Order Selection Section -->
+  <div class="order-selection-section" [class.collapsed]="selectedOrder">
+    <div
+      class="section-header"
+      (click)="toggleOrderSelection()"
+      *ngIf="selectedOrder"
+    >
+      <h3>
+        Change Order
+        <span class="toggle-icon">{{ showOrderSelection ? "▼" : "▶" }}</span>
+      </h3>
+    </div>
+    <h3 *ngIf="!selectedOrder">Select Order</h3>
+
+    <div class="selection-content" *ngIf="!selectedOrder || showOrderSelection">
+      <div class="order-search">
+        <div class="search-input-group">
+          <input
+            type="text"
+            placeholder="Search orders by number, customer name..."
+            class="form-control"
+            [(ngModel)]="orderSearchTerm"
+            (input)="searchOrders()"
+          />
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="searchOrders()"
+          >
+            🔍 Search
+          </button>
+        </div>
+      </div>
+
+      <div class="order-list" *ngIf="filteredOrders.length > 0">
+        <div
+          class="order-item"
+          *ngFor="let order of filteredOrders"
+          [class.selected]="selectedOrder?.id === order.id"
+          (click)="selectOrder(order)"
+        >
+          <div class="order-info">
+            <div class="order-number">{{ order.orderNumber }}</div>
+            <div class="customer-name">{{ order.customerName }}</div>
+            <div class="order-status">
+              <span class="status-badge" [class]="'status-' + order.status">
+                {{ order.status | titlecase }}
+              </span>
+            </div>
+          </div>
+          <div class="order-total">{{ formatCurrency(order.totalAmount) }}</div>
+        </div>
+      </div>
+
+      <div class="no-orders-message" *ngIf="filteredOrders.length === 0">
+        No orders found matching your search criteria.
+      </div>
+    </div>
+
+    <div class="selected-order" *ngIf="selectedOrder">
+      <h4>Selected Order</h4>
+      <div class="selected-order-info">
+        <div class="info-row">
+          <strong>Order #:</strong> {{ selectedOrder.orderNumber }}
+        </div>
+        <div class="info-row">
+          <strong>Customer:</strong> {{ selectedOrder.customerName }}
+        </div>
+        <div class="info-row">
+          <strong>Status:</strong>
+          <span class="status-badge" [class]="'status-' + selectedOrder.status">
+            {{ selectedOrder.status | titlecase }}
+          </span>
+        </div>
+      </div>
+      <div class="change-order-actions">
+        <button
+          type="button"
+          class="btn btn-outline-secondary btn-sm"
+          (click)="clearSelection()"
+        >
+          🔄 Change Order
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Barcode Input Section -->
+  <div class="barcode-input-section" *ngIf="selectedOrder">
+    <h3>Add Barcodes</h3>
+
+    <!-- Manual Input -->
+    <div class="input-method">
+      <div class="barcode-input-group">
+        <input
+          type="text"
+          placeholder="Enter barcode or scan..."
+          class="form-control barcode-input"
+          [(ngModel)]="currentBarcode"
+          (keydown.enter)="addBarcode()"
+          #barcodeInput
+        />
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="addBarcode()"
+          [disabled]="!currentBarcode.trim()"
+        >
+          Add Barcode
+        </button>
+      </div>
+      <div class="input-actions">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="startScanning()"
+        >
+          📷 Start Camera Scan
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="clearInput()"
+        >
+          🗑️ Clear
+        </button>
+      </div>
+    </div>
+
+    <!-- Camera Scanner -->
+    <div class="camera-scanner" *ngIf="isScanning">
+      <div class="scanner-container">
+        <video #videoElement autoplay playsinline></video>
+        <div class="scanner-overlay">
+          <div class="scan-line"></div>
+          <p>Position barcode within the frame</p>
+        </div>
+      </div>
+      <div class="scanner-controls">
+        <button type="button" class="btn btn-danger" (click)="stopScanning()">
+          Stop Scanner
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tagged Barcodes List -->
+  <div
+    class="tagged-barcodes-section"
+    *ngIf="selectedOrder && taggedBarcodes.length > 0"
+  >
+    <h3>Tagged Barcodes ({{ taggedBarcodes.length }})</h3>
+
+    <div class="barcodes-list">
+      <div
+        class="barcode-item"
+        *ngFor="let barcode of taggedBarcodes; let i = index"
+      >
+        <div class="barcode-info">
+          <div class="barcode-code">{{ barcode.code }}</div>
+          <div class="barcode-meta">
+            <span class="timestamp">{{
+              formatDateTime(barcode.timestamp)
+            }}</span>
+            <span class="scan-type">{{ barcode.scanType }}</span>
+          </div>
+        </div>
+        <div class="barcode-actions">
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-primary"
+            (click)="editBarcode(i)"
+          >
+            ✏️ Edit
+          </button>
+          <button
+            type="button"
+            class="btn btn-sm btn-danger"
+            (click)="removeBarcode(i)"
+          >
+            🗑️ Remove
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bulk Actions -->
+    <div class="bulk-actions">
+      <button
+        type="button"
+        class="btn btn-outline-secondary"
+        (click)="exportBarcodes()"
+      >
+        📤 Export List
+      </button>
+      <button
+        type="button"
+        class="btn btn-outline-warning"
+        (click)="clearAllBarcodes()"
+      >
+        🗑️ Clear All
+      </button>
+      <button type="button" class="btn btn-success" (click)="saveBarcodes()">
+        💾 Save to Order
+      </button>
+    </div>
+  </div>
+
+  <!-- Statistics -->
+  <div class="statistics-section" *ngIf="selectedOrder">
+    <h3>Statistics</h3>
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-number">{{ taggedBarcodes.length }}</div>
+        <div class="stat-label">Total Barcodes</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">{{ getScannedCount() }}</div>
+        <div class="stat-label">Camera Scanned</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">{{ getManualCount() }}</div>
+        <div class="stat-label">Manual Entry</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number">{{ getDuplicateCount() }}</div>
+        <div class="stat-label">Duplicates Found</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="form-actions">
+    <button type="button" class="btn btn-secondary" (click)="goBack()">
+      ← Back to Orders
+    </button>
+    <button
+      type="button"
+      class="btn btn-outline-primary"
+      (click)="previewReport()"
+      *ngIf="taggedBarcodes.length > 0"
+    >
+      👁️ Preview Report
+    </button>
+    <button
+      type="button"
+      class="btn btn-primary"
+      (click)="saveBarcodes()"
+      [disabled]="!selectedOrder || taggedBarcodes.length === 0"
+    >
+      💾 Save All Barcodes
+    </button>
+  </div>
+</div>
+
+<!-- Edit Barcode Modal -->
+<div class="modal-overlay" *ngIf="editingBarcode" (click)="closeEditModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Edit Barcode</h3>
+      <button type="button" class="close-btn" (click)="closeEditModal()">
+        ×
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Barcode:</label>
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="editingBarcode.code"
+        />
+      </div>
+      <div class="form-group">
+        <label>Notes:</label>
+        <textarea
+          class="form-control"
+          rows="3"
+          [(ngModel)]="editingBarcode.notes"
+          placeholder="Add any notes about this barcode..."
+        ></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="closeEditModal()"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="saveEditedBarcode()"
+      >
+        Save Changes
+      </button>
+    </div>
+  </div>
+</div>

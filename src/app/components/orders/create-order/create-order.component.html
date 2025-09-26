@@ -1,0 +1,369 @@
+<div class="create-order-container">
+  <div class="header">
+    <h2>Create New Order</h2>
+    <p class="subtitle">Fill in the details below to create a new order</p>
+  </div>
+
+  <form class="order-form" [formGroup]="orderForm" (ngSubmit)="onSubmit()">
+    <!-- Customer Information Section -->
+    <div class="form-section">
+      <h3>Customer Information</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="customerName">Customer Name *</label>
+          <div class="input-with-button">
+            <input
+              type="text"
+              id="customerName"
+              name="customerName"
+              class="form-control"
+              formControlName="customerName"
+              required
+              [class.is-invalid]="
+                orderForm.get('customerName')?.invalid &&
+                orderForm.get('customerName')?.touched
+              "
+            />
+            <button
+              type="button"
+              class="btn btn-outline-secondary"
+              (click)="openCustomerModal()"
+            >
+              Select Customer
+            </button>
+          </div>
+          <div
+            class="error-message"
+            *ngIf="
+              orderForm.get('customerName')?.invalid &&
+              orderForm.get('customerName')?.touched
+            "
+          >
+            Customer name is required
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="customerEmail">Email</label>
+          <input
+            type="email"
+            id="customerEmail"
+            name="customerEmail"
+            class="form-control"
+            formControlName="customerEmail"
+            [class.is-invalid]="
+              orderForm.get('customerEmail')?.invalid &&
+              orderForm.get('customerEmail')?.touched
+            "
+          />
+          <div
+            class="error-message"
+            *ngIf="
+              orderForm.get('customerEmail')?.invalid &&
+              orderForm.get('customerEmail')?.touched
+            "
+          >
+            Please enter a valid email address
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="customerPhone">Phone</label>
+          <input
+            type="tel"
+            id="customerPhone"
+            name="customerPhone"
+            class="form-control"
+            formControlName="customerPhone"
+          />
+        </div>
+        <div class="form-group">
+          <label for="orderDate">Order Date *</label>
+          <input
+            type="date"
+            id="orderDate"
+            name="orderDate"
+            class="form-control"
+            formControlName="orderDate"
+            required
+            [class.is-invalid]="
+              orderForm.get('orderDate')?.invalid &&
+              orderForm.get('orderDate')?.touched
+            "
+          />
+          <div
+            class="error-message"
+            *ngIf="
+              orderForm.get('orderDate')?.invalid &&
+              orderForm.get('orderDate')?.touched
+            "
+          >
+            Order date is required
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shipping Information Section -->
+    <div class="form-section">
+      <h3>Shipping Information</h3>
+      <div class="form-group">
+        <label for="shippingAddress">Shipping Address *</label>
+        <textarea
+          id="shippingAddress"
+          name="shippingAddress"
+          class="form-control"
+          formControlName="shippingAddress"
+          rows="3"
+          required
+          [class.is-invalid]="
+            orderForm.get('shippingAddress')?.invalid &&
+            orderForm.get('shippingAddress')?.touched
+          "
+        ></textarea>
+        <div
+          class="error-message"
+          *ngIf="
+            orderForm.get('shippingAddress')?.invalid &&
+            orderForm.get('shippingAddress')?.touched
+          "
+        >
+          Shipping address is required
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="city">City *</label>
+          <input
+            type="text"
+            id="city"
+            name="city"
+            class="form-control"
+            formControlName="city"
+            required
+            [class.is-invalid]="
+              orderForm.get('city')?.invalid && orderForm.get('city')?.touched
+            "
+          />
+          <div
+            class="error-message"
+            *ngIf="
+              orderForm.get('city')?.invalid && orderForm.get('city')?.touched
+            "
+          >
+            City is required
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="state">State</label>
+          <input
+            type="text"
+            id="state"
+            name="state"
+            class="form-control"
+            formControlName="state"
+          />
+        </div>
+        <div class="form-group">
+          <label for="zipCode">Zip Code</label>
+          <input
+            type="text"
+            id="zipCode"
+            name="zipCode"
+            class="form-control"
+            formControlName="zipCode"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Products Section -->
+    <div class="form-section">
+      <h3>Order Items</h3>
+      <div class="products-section">
+        <div class="product-search">
+          <label for="productSearch">Add Product</label>
+          <div class="search-input-group">
+            <input
+              type="text"
+              id="productSearch"
+              placeholder="Search products..."
+              class="form-control"
+              (input)="searchProducts($event)"
+            />
+            <button type="button" class="btn btn-secondary">Search</button>
+          </div>
+        </div>
+
+        <div class="order-items">
+          <div
+            class="order-item"
+            *ngFor="let item of orderItems; let i = index"
+          >
+            <div class="item-details">
+              <select
+                class="form-control product-select"
+                (change)="onProductSelect(i, +$any($event.target).value)"
+              >
+                <option value="0">Select Product</option>
+                <option
+                  *ngFor="let product of filteredProducts"
+                  [value]="product.id"
+                  [selected]="product.id === item.productId"
+                >
+                  {{ product.name }} - ${{ product.price }}
+                </option>
+              </select>
+            </div>
+            <div class="item-quantity">
+              <label>Quantity</label>
+              <input
+                type="number"
+                class="form-control"
+                min="1"
+                [value]="item.quantity"
+                (input)="onQuantityChange(i, +$any($event.target).value)"
+              />
+            </div>
+            <div class="item-price">
+              <label>Unit Price</label>
+              <input
+                type="number"
+                class="form-control"
+                step="0.01"
+                [value]="item.unitPrice"
+                (input)="onPriceChange(i, +$any($event.target).value)"
+                placeholder="0.00"
+              />
+            </div>
+            <div class="item-total">
+              <label>Total</label>
+              <span class="total-display">${{ item.total.toFixed(2) }}</span>
+            </div>
+            <div class="item-actions">
+              <button
+                type="button"
+                class="btn btn-danger btn-sm"
+                (click)="removeOrderItem(i)"
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          class="btn btn-outline-primary add-item-btn"
+          (click)="addOrderItem()"
+        >
+          + Add Another Item
+        </button>
+      </div>
+    </div>
+
+    <!-- Order Summary Section -->
+    <div class="form-section">
+      <h3>Order Summary</h3>
+      <div class="order-summary">
+        <div class="summary-row">
+          <span>Subtotal:</span>
+          <span class="amount">${{ subtotal.toFixed(2) }}</span>
+        </div>
+        <div class="summary-row">
+          <span>Tax:</span>
+          <span class="amount">${{ tax.toFixed(2) }}</span>
+        </div>
+        <div class="summary-row">
+          <span>Shipping:</span>
+          <span class="amount">${{ shipping.toFixed(2) }}</span>
+        </div>
+        <div class="summary-row total-row">
+          <span><strong>Total:</strong></span>
+          <span class="amount"
+            ><strong>${{ total.toFixed(2) }}</strong></span
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- Notes Section -->
+    <div class="form-section">
+      <h3>Additional Notes</h3>
+      <div class="form-group">
+        <label for="orderNotes">Order Notes</label>
+        <textarea
+          id="orderNotes"
+          name="orderNotes"
+          class="form-control"
+          formControlName="orderNotes"
+          rows="3"
+          placeholder="Any special instructions or notes..."
+        ></textarea>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="form-actions">
+      <button type="button" class="btn btn-secondary" (click)="cancel()">
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="btn btn-outline-primary"
+        (click)="saveAsDraft()"
+      >
+        Save as Draft
+      </button>
+      <button type="submit" class="btn btn-primary">Create Order</button>
+    </div>
+  </form>
+
+  <!-- Customer Selection Modal -->
+  <div
+    class="modal-overlay"
+    *ngIf="showCustomerModal"
+    (click)="closeCustomerModal()"
+  >
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Select Customer</h3>
+        <button type="button" class="close-btn" (click)="closeCustomerModal()">
+          ×
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="customer-search">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Search customers..."
+            (input)="searchCustomers($event)"
+          />
+        </div>
+        <div class="customer-list">
+          <div
+            class="customer-item"
+            *ngFor="let customer of filteredCustomers"
+            (click)="selectCustomer(customer)"
+          >
+            <div class="customer-info">
+              <h4>{{ customer.name }}</h4>
+              <p>{{ customer.email }}</p>
+              <p>{{ customer.phone }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          (click)="closeCustomerModal()"
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -3,6 +3,7 @@
     "/",
     "/customers",
     "/orders",
+    "/orders/create",
     "/products",
     "/reports"
   ]

@@ -1,0 +1,324 @@
+<div class="order-details-container">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <p>Loading order details...</p>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-container">
+    <p>{{ error }}</p>
+    <button type="button" class="btn btn-primary" (click)="loadOrderDetails()">
+      Retry
+    </button>
+  </div>
+
+  <!-- Order Details Content -->
+  <div *ngIf="order && !loading && !error">
+    <!-- Header Section -->
+    <div class="header">
+      <div class="header-left">
+        <button
+          type="button"
+          class="btn btn-secondary back-btn"
+          (click)="goBack()"
+        >
+          ← Back to Orders
+        </button>
+        <div class="order-title">
+          <h1>Order #{{ order.orderNumber }}</h1>
+          <div class="order-meta">
+            <span class="order-date">{{ formatDate(order.orderDate) }}</span>
+            <span class="status-badge" [ngClass]="'status-' + order.status">
+              {{ toTitleCase(order.status) }}
+            </span>
+            <span
+              class="priority-badge"
+              [ngClass]="'priority-' + order.priority"
+            >
+              {{ toTitleCase(order.priority) }} Priority
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- QR Code Section -->
+      <div class="header-center">
+        <div class="qr-code-container">
+          <div class="qr-code-placeholder" [innerHTML]="getQRCodeSVG()"></div>
+          <p class="qr-label">Scan to tag references</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button
+          type="button"
+          class="btn btn-outline-primary"
+          (click)="printOrder()"
+        >
+          🖨️ Print
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-primary"
+          (click)="editOrder()"
+        >
+          ✏️ Edit
+        </button>
+        <div class="dropdown">
+          <button type="button" class="btn btn-primary dropdown-toggle">
+            Actions ▼
+          </button>
+          <div class="dropdown-menu">
+            <button (click)="updateStatus('confirmed')">
+              Mark as Confirmed
+            </button>
+            <button (click)="updateStatus('processing')">
+              Mark as Processing
+            </button>
+            <button (click)="updateStatus('shipped')">Mark as Shipped</button>
+            <button (click)="updateStatus('delivered')">
+              Mark as Delivered
+            </button>
+            <hr />
+            <button (click)="cancelOrder()" class="danger">Cancel Order</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Progress Timeline -->
+    <div class="progress-section">
+      <h3>Order Progress</h3>
+      <div class="timeline">
+        <div
+          class="timeline-item"
+          [class.active]="isStatusActive('pending')"
+          [class.completed]="isStatusCompleted('pending')"
+        >
+          <div class="timeline-marker"></div>
+          <div class="timeline-content">
+            <h4>Order Placed</h4>
+            <p>{{ formatDate(order.orderDate) }}</p>
+          </div>
+        </div>
+        <div
+          class="timeline-item"
+          [class.active]="isStatusActive('confirmed')"
+          [class.completed]="isStatusCompleted('confirmed')"
+        >
+          <div class="timeline-marker"></div>
+          <div class="timeline-content">
+            <h4>Confirmed</h4>
+            <p>Order confirmed and payment processed</p>
+          </div>
+        </div>
+        <div
+          class="timeline-item"
+          [class.active]="isStatusActive('processing')"
+          [class.completed]="isStatusCompleted('processing')"
+        >
+          <div class="timeline-marker"></div>
+          <div class="timeline-content">
+            <h4>Processing</h4>
+            <p>Items being prepared for shipment</p>
+          </div>
+        </div>
+        <div
+          class="timeline-item"
+          [class.active]="isStatusActive('shipped')"
+          [class.completed]="isStatusCompleted('shipped')"
+        >
+          <div class="timeline-marker"></div>
+          <div class="timeline-content">
+            <h4>Shipped</h4>
+            <p *ngIf="order?.trackingNumber">
+              Tracking: {{ order.trackingNumber }}
+            </p>
+          </div>
+        </div>
+        <div
+          class="timeline-item"
+          [class.active]="isStatusActive('delivered')"
+          [class.completed]="isStatusCompleted('delivered')"
+        >
+          <div class="timeline-marker"></div>
+          <div class="timeline-content">
+            <h4>Delivered</h4>
+            <p *ngIf="order?.actualDeliveryDate">
+              {{ formatDate(order.actualDeliveryDate) }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-grid">
+      <!-- Customer Information -->
+      <div class="info-card">
+        <h3>Customer Information</h3>
+        <div class="customer-info">
+          <div class="info-row">
+            <label>Name:</label>
+            <span>{{ order.customerName }}</span>
+          </div>
+          <div class="info-row">
+            <label>Email:</label>
+            <span>{{ order.customerEmail }}</span>
+          </div>
+          <div class="info-row">
+            <label>Phone:</label>
+            <span>{{ order.customerPhone }}</span>
+          </div>
+          <div class="info-row">
+            <label>Customer ID:</label>
+            <span>{{ order.customerId }}</span>
+          </div>
+        </div>
+        <div class="customer-actions">
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            (click)="contactCustomer()"
+          >
+            📞 Contact Customer
+          </button>
+        </div>
+      </div>
+
+      <!-- Shipping Information -->
+      <div class="info-card">
+        <h3>Shipping Information</h3>
+        <div class="shipping-info">
+          <div class="address">
+            <p>{{ order.shippingAddress.street }}</p>
+            <p>
+              {{ order.shippingAddress.city }},
+              {{ order.shippingAddress.state }}
+              {{ order.shippingAddress.zipCode }}
+            </p>
+            <p>{{ order.shippingAddress.country }}</p>
+          </div>
+          <div class="shipping-details">
+            <div class="info-row">
+              <label>Method:</label>
+              <span>{{ toTitleCase(order.shippingMethod) }}</span>
+            </div>
+            <div class="info-row">
+              <label>Expected Delivery:</label>
+              <span>{{ formatDate(order.expectedDeliveryDate) }}</span>
+            </div>
+            <div class="info-row" *ngIf="order.trackingNumber">
+              <label>Tracking Number:</label>
+              <span>{{ order.trackingNumber }}</span>
+              <button
+                type="button"
+                class="btn btn-link"
+                (click)="trackShipment()"
+              >
+                Track
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment Information -->
+      <div class="info-card">
+        <h3>Payment Information</h3>
+        <div class="payment-info">
+          <div class="info-row">
+            <label>Method:</label>
+            <span>{{ getPaymentMethodName(order.paymentMethod) }}</span>
+          </div>
+          <div class="info-row">
+            <label>Status:</label>
+            <span
+              class="payment-status"
+              [ngClass]="'status-' + order.paymentStatus"
+            >
+              {{ toTitleCase(order.paymentStatus) }}
+            </span>
+          </div>
+          <div class="info-row">
+            <label>Total Amount:</label>
+            <span class="amount">{{ formatCurrency(order.totalAmount) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Items -->
+    <div class="items-section">
+      <h3>Order Items</h3>
+      <div class="items-table">
+        <div class="table-header">
+          <div>Product</div>
+          <div>SKU</div>
+          <div>Quantity</div>
+          <div>Unit Price</div>
+          <div>Total</div>
+        </div>
+        <div class="table-row" *ngFor="let item of order.items">
+          <div class="product-info">
+            <h4>{{ item.productName }}</h4>
+          </div>
+          <div>{{ item.productSku }}</div>
+          <div>{{ item.quantity }}</div>
+          <div>{{ formatCurrency(item.unitPrice) }}</div>
+          <div>{{ formatCurrency(item.totalPrice) }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="summary-section">
+      <h3>Order Summary</h3>
+      <div class="summary-card">
+        <div class="summary-row">
+          <span>Subtotal:</span>
+          <span>{{ formatCurrency(order.subtotal) }}</span>
+        </div>
+        <div class="summary-row" *ngIf="order.taxAmount && order.taxAmount > 0">
+          <span>Tax:</span>
+          <span>{{ formatCurrency(order.taxAmount) }}</span>
+        </div>
+        <div
+          class="summary-row"
+          *ngIf="order.shippingCost && order.shippingCost > 0"
+        >
+          <span>Shipping:</span>
+          <span>{{ formatCurrency(order.shippingCost) }}</span>
+        </div>
+        <div class="summary-row total-row">
+          <span><strong>Total:</strong></span>
+          <span
+            ><strong>{{ formatCurrency(order.totalAmount) }}</strong></span
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Notes -->
+    <div class="notes-section" *ngIf="order.notes">
+      <h3>Order Notes</h3>
+      <div class="notes-content">
+        <p>{{ order.notes }}</p>
+      </div>
+    </div>
+
+    <!-- Activity Log -->
+    <div class="activity-section">
+      <h3>Activity Log</h3>
+      <div class="activity-list">
+        <div class="activity-item">
+          <div class="activity-time">{{ formatDate(order.orderDate) }}</div>
+          <div class="activity-content">
+            <strong>Order Created</strong>
+            <p>Order was placed by {{ order.customerName }}</p>
+          </div>
+        </div>
+        <!-- Add more activity items as needed -->
+      </div>
+    </div>
+  </div>
+</div>
