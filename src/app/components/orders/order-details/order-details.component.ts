@@ -173,7 +173,7 @@ export class OrderDetailsComponent implements OnInit {
       }
 
       // Use the correct route path with query parameters
-      const orderUrl = `${baseUrl}/orders/tag-references?orderId=${this.order.id}`;
+      const orderUrl = `${baseUrl}/InventoryApp-Frontend/orders/tag-references?orderId=${this.order.id}`;
       console.log('Generated QR URL:', orderUrl); // Debug log
 
       const qrOptions: QRCode.QRCodeToDataURLOptions = {
